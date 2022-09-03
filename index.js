@@ -48,20 +48,26 @@ const replaceTemplate = (temp, product) => {
     output = output.replace(/{%ID%}/g, product.id);
     output = output.replace(/{%QUANTITY%}/g, product.quantity);
 
-    if(!product.organic) output = output.replace(/{%NOT_ORGANIC%}/g, 'not-organic');
+    if (!product.organic) output = output.replace(/{%NOT_ORGANIC%}/g, 'not-organic');
     return output;
 };
 
 const server = https.createServer((req, res) => {
-    const pathname = req.url;
+
+    const {query, pathname} = url.parse(req.url, true)
+
+    // const pathname = req.url;
     if (pathname === '/overview' || pathname === '/') {
         res.writeHead(200, { 'Content-type': 'text/html' });
         const cardshtml = productData.map(el => replaceTemplate(tempCard, el)).join('');
         // console.log(cardshtml);
-        const output = tempOverview.replace('{%PRODUCT_CARDS%}',cardshtml);
+        const output = tempOverview.replace('{%PRODUCT_CARDS%}', cardshtml);
         res.end(output);
-    } else if (pathname === '/product') {
-        res.end('This is the PRODUCTNAME');
+    } else if (pathname === '/product' ) {
+        res.writeHead(200, { 'Content-type': 'text/html' });
+        const product = productData[query.id];
+        const output = replaceTemplate(tempProduct, product);
+        res.end(output);
     }
     else if (pathname === '/api') {
         productData.array.forEach(element => {
