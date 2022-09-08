@@ -36,6 +36,7 @@ const replaceTemplate = require('./modules/replaceTemplate.js');
 const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`, 'utf-8');
 const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
 const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8');
+const helloworld = "hello world";
 
 const value = fs.readFileSync(`./dev-data/data.json`, 'utf-8');
 
@@ -78,3 +79,5 @@ const server = https.createServer((req, res) => {
 server.listen(8080, '127.0.0.1', () => {
     console.log('Listening to request on port 8080');
 });
+
+console.log(helloworld);
