@@ -4,33 +4,22 @@ const morgan = require('morgan');
 const tourRouter = require(`./starter/routes/tourRoutes`);
 const userRouter = require(`./starter/routes/userRoutes`);
 const AppError = require('./starter/utils/appError');
-const errorController = require('./starter/controllers/errorController'); 
+const errorController = require('./starter/controllers/errorController');
 
 const app = express();
 
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
-}
-
-// 1: Middleware
+};
 
 
 app.use(express.json());
-app.use(express.static(`${__dirname}/starter/public`))
+app.use(express.static(`${__dirname}/starter/public`));
 
-// app.use((req, res, next) => {
-//     console.log('Hello from the middleware');
-//     next();
-// });
-
-// 2: Route handlers 
-
-//= app.get('/api/v1/tours', getAllTours);
-// app.get(`/api/v1/tours/:id`, getTour);
-// app.patch('/api/v1/tours/:id', updateTour);
-// app.delete('/api/v1/tours/:id', deleteTour);
-// app.post('/api/v1/tours', createTour);
-
+app.use((req, res, next) => {
+    console.log('This is the middleware');
+    next();
+});
 
 // 3: Routes
 /*

@@ -1,4 +1,5 @@
 const fs = require('fs');
+const catchAsync = require('./../utils/catchAsync');
 
 const users = JSON.parse(
     fs.readFileSync(`${__dirname}/../dev-data/data/users.json`, err => {
@@ -6,7 +7,7 @@ const users = JSON.parse(
     })
 );
 
-exports.getAllUsers = (req, res) => {
+exports.getAllUsers = catchAsync(async (req, res, next) => {
     console.log('Get all users');
     res.status(200).json({
         status: 'success',
@@ -14,7 +15,7 @@ exports.getAllUsers = (req, res) => {
             users
         }
     });
-};
+});
 
 const genRand = (len) => {
     return Math.random().toString(36).substring(2, len + 2);
@@ -34,7 +35,7 @@ exports.createUser = (req, res) => {
                 data: {
                     user: newUser
                 }
-            })   
+            })
         });
 
 };

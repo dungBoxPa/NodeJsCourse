@@ -1,19 +1,21 @@
 const express = require('express');
-const userController = require('./../controllers/tourController');
-// const {getAllUsers, createUser, getUser, updateUser, deleteUser} = require('./../controllers/tourController');
-const app = express();
+const userController = require('./../controllers/userController');
+const authController = require('./../controllers/authController');
 
+const app = express();
 
 const router = express.Router();
 
+router.post('/signup', authController.signUp);
+
 router.route('/')
-    .get(userController.getAllTours)
-    .post(userController.createTour);
+    .get(userController.getAllUsers)
+    .post(userController.createUser);
 
 router.route('/:id')
-    .get(userController.getTour)
-    .patch(userController.updateTour)
-    .delete(userController.deleteTour);
+    .get(userController.getUser)
+    .patch(userController.updateUser)
+    .delete(userController.deleteUser);
 
 
 module.exports = router;
