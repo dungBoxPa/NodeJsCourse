@@ -123,7 +123,7 @@ tourSchema.pre('save', function (next) {
 
 
 tourSchema.post('save', function (doc, next) {
-    console.log(doc);
+    // console.log(doc);
     next();
 });
 
@@ -136,8 +136,8 @@ tourSchema.pre(/^find/, function (next) {
 });
 
 tourSchema.post(/^find/, function(docs, next) {
-    console.log(this.start);
-    console.log(`Query took ${Date.now() - this.start}`);
+    // console.log(this.start);
+    // console.log(`Query took ${Date.now() - this.start}`);
 
     // console.log(docs);
     next();
@@ -146,7 +146,7 @@ tourSchema.post(/^find/, function(docs, next) {
 // Aggragation middleware: Point to the AGGREGATION OBJECT
 tourSchema.pre('aggregate', function(next){
     this.pipeline().unshift({ $match: {secretTour: {$ne: true}}})
-    console.log(this.pipeline());
+    // console.log(this.pipeline());
     next();
 });
 

@@ -1,14 +1,16 @@
 const fs = require('fs');
 const catchAsync = require('./../utils/catchAsync');
+const User = require('./../model/userModel');
 
-const users = JSON.parse(
-    fs.readFileSync(`${__dirname}/../dev-data/data/users.json`, err => {
-        console.log(err);
-    })
-);
+// const users = JSON.parse(
+//     fs.readFileSync(`${__dirname}/../dev-data/data/users.json`, err => {
+//         console.log(err);
+//     })
+// );
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
     console.log('Get all users');
+    const users = await User.find();
     res.status(200).json({
         status: 'success',
         data: {
@@ -40,30 +42,25 @@ exports.createUser = (req, res) => {
 
 };
 
-exports.getUser = (req, res) => {
+exports.getUser = catchAsync(async (req, res) => {
     const id = req.params.id;
-
-    const user = users.find(el => el._id === id);
+    const user = await User.findById(id);
     console.log(user);
-    if (!user) {
-        return res.status(404).json({
-            status: 'failed',
-            message: 'Invalid Id'
-        });
-    } else {
-        res.status(200).json({
-            status: 'success',
-            data: user
-        })
-    }
-};
+    res.status(200).json({
+        status: 'success',
+        data: user
+    })
+});
 
-exports.updateUser = (req, res) => {
+exports.updateUser = catchAsync(async (req, res) => {
+    const user_id = req.params.id;
+    const update_user = await User.findByIdAndUpdate({ user_id });
+    console.log(update_user);
     res.status(404).json({
         status: 'failed',
         message: 'This feature has not been update!'
     })
-}
+});
 
 exports.deleteUser = (req, res) => {
     res.status(404).json({

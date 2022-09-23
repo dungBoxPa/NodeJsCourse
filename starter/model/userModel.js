@@ -26,31 +26,51 @@ const userSchema = new mongoose.Schema(
             required: [true, 'User must have a password'],
             // validateL [validator.isPassword],
             minLength: 8,
-            trim: true
+            trim: true,
+            select: false
+        },
+        role: {
+            type: String,
+            enum: ['user', 'guide', 'lead-guide', 'admin'],
+            default: 'user'
         },
         passwordConfirm: {
             type: String,
             require: [true, 'Please confirm your password'],
             validate: {
-                validator: function(el){
+                validator: function (el) {
                     return el === this.password;
                 },
                 message: "Password not match!"
             }
-        }
+        },
+        passwordChangedAt: Date
     }
 );
 
-userSchema.pre('save', async function(next){
+userSchema.pre('save', async function (next) {
     // Only run this function if this password was actually modified
-    if(!this.isModified('password')){
+    if (!this.isModified('password')) {
         return next();
-    }else{
+    } else {
         // Hash the password with the code 12 and delete password confirmation  
         this.password = await bcrypt.hash(this.password, 12);
         this.passwordConfirm = undefined;
     }
-})
+});
+
+userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
+    return await bcrypt.compare(candidatePassword, userPassword);
+}
+
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+    if (this.passwordChangedAt) {
+        const changedTimeStamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+        console.log(changedTimeStamp, JWTTimestamp);
+        return changedTimeStamp > JWTTimestamp;
+    }
+    return false
+}
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;

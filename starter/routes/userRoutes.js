@@ -7,6 +7,8 @@ const app = express();
 const router = express.Router();
 
 router.post('/signup', authController.signUp);
+router.post('/login', authController.login);
+
 
 router.route('/')
     .get(userController.getAllUsers)
@@ -15,7 +17,9 @@ router.route('/')
 router.route('/:id')
     .get(userController.getUser)
     .patch(userController.updateUser)
-    .delete(userController.deleteUser);
+    .delete(authController.protect,
+        authController.restrictTo('admin', 'lead-guide'),
+        userController.deleteUser);
 
 
 module.exports = router;
