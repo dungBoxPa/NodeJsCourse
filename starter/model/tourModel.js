@@ -145,7 +145,7 @@ tourSchema.post(/^find/, function(docs, next) {
 
 // Aggragation middleware: Point to the AGGREGATION OBJECT
 tourSchema.pre('aggregate', function(next){
-    this.pipeline().unshift({ $match: {secretTour: {$ne: true}}})
+    this.pipeline().unshift({ $match: {secretTour: {$ne: true}}});
     // console.log(this.pipeline());
     next();
 });
