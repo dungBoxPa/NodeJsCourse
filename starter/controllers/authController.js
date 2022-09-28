@@ -8,7 +8,7 @@ const crypto = require('crypto');
 
 const signToken = (id) => {
     return jwt.sign(
-        { id: id},
+        { id: id },
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRE_IN }
     );
@@ -18,7 +18,7 @@ const createSendToken = (user, statusCode, res) => {
     const token = signToken(user._id);
     res.status(statusCode).json({
         status: 'success',
-        token, 
+        token,
         data: {
             user
         }
@@ -164,9 +164,9 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 exports.updatePassword = catchAsync(async (req, res, next) => {
     // 1: Get user from collection
     const user = await User.findById(req.user.id).select('+password');
-    
+
     // 2: Check if POSTed current password is correct
-    if(!(await user.correctPassword(req.body.passwordCurrent, user.password))){
+    if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
         return next(new AppError('Your current password is wrong', 401));
     }
     console.log(user);
