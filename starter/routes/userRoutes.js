@@ -2,13 +2,16 @@ const express = require('express');
 const ExpressBrute = require('express-brute');
 const userController = require('./../controllers/userController');
 const authController = require('./../controllers/authController');
-var moment = require('moment');
+const expressSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 
 const app = express();
 
 var failCallback = function (req, res, next, nextValidRequestDate) {
-    req.flash('error', "You've made too many failed attempts in a short period of time, please try again " + moment(nextValidRequestDate).fromNow());
-    res.redirect('/login'); // brute force protection triggered, send them back to the login page
+    res.status(200).json({
+        status: 'success',
+        message: `Too many attemps to login. Please wait 10s to login again!`
+    });
 };
 
 var handleStoreError = function (error) {
@@ -33,12 +36,7 @@ const userBruteforce = new ExpressBrute(store, {
 const router = express.Router();
 
 router.post('/signup', authController.signUp);
-router.post('/login', userBruteforce.getMiddleware({
-    key: function (req, res, next) {
-        // prevent too many attempts for the same username
-        next(req.body.email);
-    }
-}), authController.login);
+router.post('/login', authController.login);
 
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
